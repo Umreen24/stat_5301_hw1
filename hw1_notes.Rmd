@@ -1,0 +1,327 @@
+---
+title: "Ch. 1 HW Notes"
+author: "Dr. Shoemaker"
+date: "8/26/2020"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is a document designed to help with Ch 1 homework on WebAssign. This R code is yours to modify and run. You can run the code in the chunks, or you can "knit" the entire file. 
+
+### 1 - 6 
+
+Pretty easy, but let's define some terms we will need later.
+
+Think of data in a spreadsheet. Each row is a record of a unique object (it could be a person or a transaction or etc.). Each column represents a *variable* which describes the object (for a person it could be name, gender, height, income, number of children, etc.).
+
+These questions are about understanding the differences between *qualitative* and *quantitative* variables. Qualitative variables are categorical. They can be ordered (like good, better, best) or not. Quantitative variables can be discrete or continuous.
+
+Quantitative data are *discrete* if every possible value can be listed. The list might be infinite, like ${1,2,3,…}$ but it's clear that 4 comes after 3, and 5 comes after 4. If you had forever, you would KNOW HOW to count the values.
+
+Quantitative data are *continuous* if the possible values are like points on the number line. Select any two points, and there is always an infinite number of points between them. There is no hope of listing them or counting them, even if you had forever.
+
+The symbol $\mathbb{R}$ represents the set of real numbers, the same thing as the set of points on the number line. A piece of the number line is called an interval. The *interval* (3,5) is the set of numbers larger than 3 and smaller than 5. We write it like this:
+
+$$(3,5) = \{x \in \mathbb{R} : x > 3 \ \& \ x < 5 \} = \{ x \in \mathbb{R} : 3 < x < 5  \} $$
+
+We say $(3,5)$ is an open interval because the endpoints 3 and 5 are NOT contained in it. To specify a closed interval, use square brackets: $[3,5]=\{x\in \mathbb{R}:3 \leq x \leq 5 \}$. Mix and match for a half-open interval: (3,5] is open on the left, closed on the right.
+
+### 7. 
+
+**Note:** Your specific values may be different than mine due to randomization. 
+
+The interval discussion above makes it easy to talk about this problem. We can't see the exact data values since the data have already been grouped into ranges (intervals):
+
+- 6 data points are in [3,3.5)
+- 15 data points are in [3.5, 4)
+- 26 data points are in [4, 4.5)
+- etc. 
+
+```{r}
+
+# input the data
+xvec <- c(6,15,26,33,21,15,6,2,4,2)  # c() is the R function which combines elements into vectors
+    # the <- is the assignment operator in R; 
+    # the statement assigns the vector on the right hand side (RHS) 
+       # to the name on the left hand side (LHS) 
+    # assignment commands like this don't return any output
+    # a vector in R is an ordered list of numbers or character strings
+    # xvec is just a name I like
+
+xvec   # type xvec to display the new object
+```
+
+Does this match the values in the WebAssign hw? It is easy to make a mistake when you type in data, so this step is always important.
+
+### 7a. What proportion of the observations are less than 5? 
+
+(6+15+26+33) divided by the total (6+15+26+33+21+15+6+2+4+2) will give the answer. Code below has some extra steps, and results for each are shown below.
+
+```{r}
+sum(xvec[1:4]) # numerator = (6+15+26+33) 
+sum(xvec) # denominator = (6+15+26+33+21+15+6+2+4+2)
+sum(xvec[1:4])/sum(xvec) # numerator divided by denominator gives the answer!
+ans7a <- sum(xvec[1:4])/sum(xvec) # just storing the answer as ans7a 
+ans7a # displaying the answer again 
+round(ans7a, 3) # hw asked for 3 decimal places
+round(sum(xvec[1:4])/sum(xvec), 3) # or just do everything in one step, without storing anything
+```
+
+So .615 is what we give WebAssign.
+
+### 7b. What proportion of the observations are at least 6?
+
+Similar to 7a. Remember that "at least" means $\geq$. 
+
+### 7c. Make a histogram... 
+
+It's easy to just pick the one that looks right. Let's see how to make the histogram in R.
+
+For this we need the data points themselves, not the group totals we have now. So we will make a fake dataset that respects the group totals and will give the same histogram as the real data. It's a little trickery. We just need 6 data values between 3 and 3.499999999, 15 between 3.5 and 3.99999999, etc.
+
+R will make the histogram with frequency (counts) instead of relative frequency (percents) on the y-axis. The shape will be good enought to answer 7c).
+
+```{r}
+xdata <- c(rep(3,xvec[1]), rep(3.5,xvec[2]), rep(4,xvec[3]), rep(4.5,xvec[4]), rep(5,xvec[5]), rep(5.5,xvec[6]), 
+           rep(6,xvec[7]), rep(6.5,xvec[8]), rep(7,xvec[9]), rep(7.5,xvec[10])) 
+xdata  # display xdata so we can see what we did
+    # the rep() functions repeats values; the numbers in xvec tell it how many times to repeat each value
+    # I could have picked 3.1 instead of 3; or  3.8917305715 insted of 3.5; doesn't matter really
+hist(xdata) # this plots the histogram
+```
+
+R made the histogram with frequency (counts) instead of relative freq (percents) on the y-axis. It's good enough to answer 7c).
+
+### 7d. Construct a histogram with density
+
+Specify `probability = T` to get density on the y-axis. This scaling makes the AREA of the histogram equal to 1, like a probability distribution. The last plot is HUGE, so here we will control the size of the plot.
+
+```{r}
+library(repr) # loading the library that let's us control plot size
+options(repr.plot.width=5, repr.plot.height=4) # specifying the plot size we want
+hist(xdata, probability = T)
+```
+
+### 8. So, b and d are wrong. Use Section 1.3 to decide between a and c. 
+
+### 9. A little bit of typing first
+
+I'm lazy and don't want to type the decimal every time, so ...
+
+```{r}
+xvec <- .001 * c(734, 849, 870, 900, 924, 935, 961, 1010, 1035, 1047, 1088, 1123, 1138, 1161, 1231, 1351)
+xvec # make sure my xvec is right!
+```
+
+### 9a. Find the sample mean $\bar{x}$ and the sample median $\tilde{x}$ 
+
+Use `mean(xvec)` and `median(xvec)` in the window above. 
+
+### 9b. How much could we decrease the largest data value without changing the sample median? 
+
+Sort the data to see the max and also the two middle values which get averaged to give $\tilde{x}$
+
+```{r}
+sort(xvec)  # this shows the max is 1.351
+length(xvec) # xvec contains 16 values
+    # that means the sample median is the average of the 8th and 9th values
+sort(xvec)[8:9] # identify the 8th and 9th values in the sorted data
+```
+
+If we replace the max = 1.351 with 1.3 (decreasing it by .051), the median won't change. If we replace it with 1.2 (decreasing it by .151), the median still doesn't change. How much can we decrease it?
+
+### 10a. What is the proportion of successes in the sample?
+
+Load the data, count the successes, divide by the total:
+
+```{r}
+xvec <- c('S', 'S', rep('F', 6), 'S', 'S')  # remember rep() command from above?
+xvec == 'S'  # mark each success with a TRUE, each success with a FALSE
+sum(xvec == 'S') # count the TRUE's using sum(): it converts TRUE to 1, FALSE to 0, then adds them up
+    # obviously answer is 6/10 = .6; how to make R give  us the 10?  use the length() command from above 
+sum(xvec == 'S')/length(xvec)  # done!!!!
+```
+
+### 10b. Replace S with 1 and replace F with 0. Calc the sample mean $\bar{x}$ for this new data vector. 
+
+This is just another way to do part a)
+
+```{r}
+yvec <- ifelse(xvec == 'S', 1, 0)
+yvec
+# type mean(yvec) to get the sample mean
+```
+
+### 10c. Suppose we add 15 cars to the data set. How many should be S's to give $x/n = 0.6$ for the entire sample of 25 cars? 
+
+It's easier to think about 1's and 0's than about S and F here. R doesn't help much with this one.
+
+### 11. We have melting point data for $n = 12$ specimens of a polymer
+
+### abc. Find the sample range, sample variance, sample standard dev. 
+
+```{r}
+xvec <- c(180.6, 181.7, 180.8, 181.5, 182.5, 181.7, 181.2, 182.1, 180.3, 181.6, 180.6)
+
+max(xvec)- min(xvec)   # one way to get sample range; should be 2.2, not sure why jupyter displays 2.19999999999
+range(xvec) # or try the range() function, but it doesn't subtract, it returns a vector with the min and max
+range(xvec)[2] - range(xvec)[1] # so do the subtraction yourself!
+
+var(xvec) # sample variance
+
+sd(xvec) # sample standard deviation
+sqrt(var(xvec)) # another way to get sample standard deviation
+var(xvec)^.5 # or do it this way
+```
+
+### 11d. Use shortcut method for $s^2$
+
+The sample variance is defined as \[ s^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1} = \frac{S_{XX}}{n-1} \]
+
+$S_{XX}$ is just a name for the numerator. The shortcut method replaces the numerator with an equivalent expression. The shortcut formula for $S_{XX}$ is:  \[ S_{XX} = \sum_{i=1}^n x_i^2 - \frac{(\sum_{i=1}^n x_i)^2}{n} = \sum_{i=1}^n x_i^2 - \frac{n(\sum_{i=1}^n x_i)^2}{n^2} = 
+\sum_{i=1}^n x_i^2 - n\bar{x}^2 \]
+
+We will find the two terms $\sum_{i=1}^n x_i^2$ and $n\bar{x}^2$ separately. 
+
+```{r}
+sum(xvec^2)  # the first term 
+length(xvec)*mean(xvec)^2  # second term
+```
+
+### 12) Do this by yourself in the R window below.
+
+- Type the data into R.
+- Find the sample mean.
+- Use `xvec - mean(xvec)` to get the deviations.
+- Find the sample variance and sample standard deviation using `var()` and `sd()`.
+- For part c, use the code from 11d above.
+- For part d, create transformed data like this: `yvec <- xvec - 100` . Then find the sample variance of yvec.
+
+### 13) The data are differences between air and soil temperatures under three types of PVC frames. The types are labeled cooler, control, and warmer. Do this by yourself in the R window below.
+
+Type the data into R. What?? No way. Too much data, so copy and paste the data into excel. Use Paste Special. You might have to try several different ways. Keep trying until the data look good in excel. That's what I did, then I pasted the first column into the R window. I added x.cool <- c( at the top, lots of commas (bam, bam, bam, fast!), and ) at the end. Do the same thing to create vectors x.control and x.warm.
+
+
+Parts a) and b) are easy.
+
+```{r}
+x.cool <- c(1.59,
+1.43,
+1.88,
+1.26,
+1.91,
+1.86,
+1.9,
+1.57,
+1.79,
+1.72,
+2.41,
+2.34,
+0.87,
+1.34,
+1.76)  
+
+x.control <- c(1.92,
+2,
+2.19,
+1.12,
+1.78,
+1.84,
+2.45,
+2.03,
+1.52,
+0.53,
+1.9)
+
+x.warm <- c(2.57,
+2.6,
+1.93,
+1.58,
+2.3,
+0.84,
+2.65,
+0.07,
+2.74,
+2.53,
+2.13,
+2.86,
+2.31,
+1.91)
+```
+
+
+### 13c)  Do the fourth spreads tell the same story as the standard deviations?
+
+Answer this question AFTER you build the boxplots in d). The fourth spread is the width of the box in the box plot. It represents the interquartile range of the data.
+
+### 13d) Comparative boxplot
+
+Building the comparative boxplots in d) will take a few extra steps, but making three separate boxplots is easy:
+
+```{r}
+boxplot(x.cool)
+boxplot(x.control)
+boxplot(x.warm)
+```
+
+That's hard to compare! Let's try again with a color and make it into a 1 by 3 grid. 
+
+```{r}
+par(mfrow = c(1,3)) # asking for plots arrange in 1 row and 3 columns
+    # R will keep plotting this way until we change it or reset to normal with par(mfrow = c(1,1))
+boxplot(x.cool, col = 'blue') # type colors() to see all the named colors that R knows
+    # you can name them ( "mediumorchid2" ) or specify their index ( colors()[464] )
+    # what is the index of lemonchiffon4?
+boxplot(x.control, col = 'grey')
+boxplot(x.warm, col = 'red')
+par(mfrow = c(1,1))  # reset plot window to full size
+```
+
+It's still not great because y-axes are all different. That's why they ask for a *comparative boxplot*. I might call this a *grouped boxplot*. It means we want to see all three data vectors together in the same plot. This requires combining the three samples into one vector and labeling each point as cooler, control, or warmer. We will end up with two vectors, one with temperature differences like 1.59 or 1.92, and one with labels.
+
+```{r}
+x.temp <- c(x.cool, x.control, x.warm)  # combining the three vectors; temp stands for temperature
+length(x.temp) # tells us how many values in all
+
+
+length(x.cool) # this is how many will get labeled as cooler
+length(x.control) # this many will get labled as control
+length(x.warm) # this many will get labeled warmer
+
+# now use those numbers to build the vector of labels:
+
+x.labels <- c(rep('cooler', 15), rep('control', 11), rep('warmer', 14))
+x.labels # see if it looks right
+```
+
+We will combine `x.temp` and `x.labels` into a single data.frame. A data.frame in R is like a spreadsheet. It has rows and columns. Each row is a record. Each column is a variable. The variables can be a mix of quantitative and qualitative.
+
+```{r}
+pr13.dat <- data.frame(temp = x.temp, label = x.labels) # creating a data.frame called pr13.dat
+    # its first column will be named temp and will contain the vector x.temp
+    # its second column will be named label and will contain the vector x.labels
+dim(pr13.dat)  # see the number of rows and column in the data.frame; should be 40x2
+pr13.dat$label <- factor(pr13.dat$label, levels=c('cooler','control','warmer'))  
+    # previous step lets us control the order of the boxplots; just go with it for now; too much to explain here!
+```
+
+
+Now we can make the comparative boxplot. We use the boxplot() function again, but this time the imputs are different. Look at the code below. There are three inputs:
+
+- `temp~label` is a model statement. temp is the variable we are plotting, and label is the grouping variable. Model statements always use ~. Model statements tell R to think of the LHS as a function of the RHS.
+- `data = pr13.dat` identifies the data.frame that contains the variables temp and labels. It tells R to look in pr13.dat for variables named temp and labels
+- `col = ...` specifies the three colors The result is shown below.
+
+```{r}
+boxplot(temp ~ label, data  = pr13.dat, col = c('blue','grey','red'))
+```
+
+Can you make the plot sideways like in WebAssign? Run `help(boxplot)` to see the help file. Then modify the code above to produce a sideways plot.
+
+We are done with problem 13. I'm leaving the rest of hw1 to you. Adding your work to this notebook would be a good exercise!
